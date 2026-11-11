@@ -14,28 +14,42 @@ class TaxType(Enum):
 
 class Tax:
     # Write the parameters in the next line
-    def __init__():
+    def __init__(self, tax_id: str, tax_type: TaxType, percentage: float):
         # Write here your code
-        pass
+        self.tax_id = tax_id
+        self.tax_type = tax_type
+        self.percentage = percentage
 
 
 class Product:
      # Write the parameters in the next line
-    def __init__():
+    def __init__(self, product_id: str, name: str, expiration_date: datetime, bar_code: str, quantity: int,
+                 price: float, taxes: list[Tax])):
         # Write here your code
-        pass        
+        self.product_id = product_id
+        self.name = name
+        self.expiration_date = expiration_date
+        self.bar_code = bar_code
+        self.quantity = quantity
+        self.price = price
+        self.taxes = taxes        
 
     def calculate_tax(self, tax: Tax) -> float:
-        # Write here your code
-        pass
+        value = self.quantity * self.price * tax.percentage
+        if tax.tax_type == TaxType.ISD:
+            value = value * ISD_FACTOR
+        return float(value)
 
     def calculate_total_taxes(self) -> float:
         # Write here your code
-        pass
+        total = 0.0
+        for tax in self.taxes:
+            total += self.calculate_tax(tax)
+        return total
 
     def calculate_total(self) -> float:
         # Write here your code
-        pass
+        return self.quantity * self.price + self.calculate_total_taxes()
 
     def __eq__(self, another):
         # Do not change this method
@@ -56,12 +70,19 @@ class Product:
 class Bill:
     def __init__(self, bill_id: str, sale_date: datetime, seller: Seller, buyer: Buyer, products: list[Product]):
         # Write here your code
-        pass
+        self.bill_id = bill_id
+        self.sale_date = sale_date
+        self.seller = seller
+        self.buyer = buyer
+        self.products = products
        
 
     def calculate_total(self) -> float:
         # Write here your code
-        pass
+        total = 0.0
+        for product in self.products:
+            total += product.calculate_total()
+        return total
 
     def print(self):
         # Do not change this method
